@@ -1,0 +1,25 @@
+  - name: removing app directory 
+    ansible.builtin.file:
+      path: /app
+      state: absent
+
+  - name: creating app directory
+    ansible.builtin.file:
+      path: /app
+      state: directory
+
+  - name: "remove the {{ component }}.zip file in tmp directory"
+    ansible.builtin.file:
+      path: /tmp/{{ component }}.zip
+      state: absent
+
+  - name: "dowloading the code to {{ component }}.zip file in tmp directory"
+    ansible.builtin.get_url:
+      url: https://roboshop-artifacts.s3.amazonaws.com/{{ component }}-v3.zip
+      dest: /tmp/{{ component }}.zip
+
+  - name: extract {{ component }} application in /app directory
+    ansible.builtin.unarchive:
+    src: /tmp/{{ component }}.zip
+    dest: /app
+    remote_src: yes    

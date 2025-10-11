@@ -1,0 +1,19 @@
+  - name: create roboshop system user
+    ansible.builtin.user:
+      name: roboshop
+      comment: RoboShop System user
+      system: true
+      shell: /sbin/nologin
+      home: /app
+
+  - name: copy {{ component }}.service file
+    ansible.builtin.copy:
+      src: "{{ component }}.service.j2"
+      dest: "/etc/systemd/system/{{ component }}.service"
+    notify: daemon-reload
+
+  - name: start the service for {{ component }}
+    ansible.builtin.service:
+      name: "{{ component }}"
+      state: restarted
+      enabled: yes
