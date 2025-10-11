@@ -18,7 +18,7 @@
       url: https://roboshop-artifacts.s3.amazonaws.com/{{ component }}-v3.zip
       dest: /tmp/{{ component }}.zip
 
-  - name: extract {{ component }} application in /app directory
+  - name: "extract {{ component }} application in /app directory"
     ansible.builtin.unarchive:
     src: /tmp/{{ component }}.zip
     dest: /app
