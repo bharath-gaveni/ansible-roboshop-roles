@@ -1,0 +1,80 @@
+# - name: "creating ec2-instances"
+#   hosts: "local"
+#   connection: "local"
+#   become: yes
+#   vars:
+#     ami_id: ami-09c813fb71547fc4f
+#     sg_id: sg-0e84bdd3fbd61aac4 # replace with your SG ID
+#     zone_id: "Z00567342XXYQ4M01AREL" # replace with your ID
+#     domain_name: "bharathgaveni.fun"
+#   tasks:
+#   - name: create ec2 instance
+#     amazon.aws.ec2_instance:
+#       name: "{{ item }}"
+#       instance_type: t3.micro
+#       security_group: "{{ sg_id }}"
+#       image_id: "{{ ami_id }}"
+#       tags:
+#         Name: "{{ item }}"
+#     loop: "{{ instances }}"
+#     register: ec2_output
+
+- name: "creating ec2-instances"
+  hosts: "local"
+  connection: "local"
+  vars:
+    ami_id: ami-09c813fb71547fc4f
+    sg_id: sg-0e84bdd3fbd61aac4 # replace with your SG ID
+    zone_id: "Z00567342XXYQ4M01AREL" # replace with your ID
+    domain_name: "bharathgaveni.fun"
+
+  tasks:
+  - name: creating ec2-instances
+    amazon.aws.ec2_instance:
+      name: "{{ item }}"
+      instance_type: t3.micro
+      security_group: "{{ sg_id }}"
+      image_id: "{{ ami_id }}"
+      tags:
+        Name: "{{ item }}"
+    loop: "{{ instances }}"
+    register: ec2_output
+
+  # ec2_output consists for example mongodb and redis its response structure like json its has results [] in results it has instances it has ips and item is the current name of the instance passed through command line and second item is 
+
+  - name: Add an A record with Hosted Zone ID
+    amazon.aws.route53:
+      state: present
+      zone: "{{ domain_name }}"
+      hosted_zone_id: "{{ zone_id }}"
+      record: "{{ item.item }}.{{ domain_name }}"
+      type: A
+      ttl: 1
+      value: "{{ item.instances[0].private_ip_address }}"
+      overwrite: true
+    loop: "{{ ec2_output.results }}" 
+
+  - name: Add an A with public ip record with Hosted Zone ID
+    amazon.aws.route53:
+      state: present
+      zone: "{{ domain_name }}"
+      hosted_zone_id: "{{ zone_id }}"
+      record: "{{ domain_name }}"
+      type: A
+      ttl: 1
+      value: "{{ item.instances[0].public_ip_address }}"
+      overwrite: true
+    when: item.item == "frontend"
+    loop: "{{ ec2_output.results }}" 
+
+    
+  # - name: create route53 record
+  #   amazon.aws.route53:
+  #     state: present
+  #     zone: "{{ domain_name }}"
+  #     record: "{{ item.item }}.{{ domain_name }}" # mongodb.daws86s.fun
+  #     type: A
+  #     ttl: 1
+  #     value: "{{ item.instances[0].private_ip_address }}"
+  #     overwrite: true
+  #   loop: "{{ ec2_output.results }}"
