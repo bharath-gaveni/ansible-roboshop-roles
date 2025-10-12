@@ -1,0 +1,7 @@
+- name: "import vs include role"
+  ansible.builtin.debug:
+    msg: "Hi...."
+
+- name: "import vs include role"
+ansible.builtin.debug:
+    msg: "Hello...." 
