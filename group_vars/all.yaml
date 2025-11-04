@@ -1,9 +1,9 @@
-MONGODB_HOST: mongodb.bharathgaveni.fun
-REDIS_HOST: redis.bharathgaveni.fun
-CATALOGUE_HOST: catalogue.bharathgaveni.fun
-CART_HOST: cart.bharathgaveni.fun
-USER_HOST: user.bharathgaveni.fun
-RABBITMQ_HOST: rabbitmq.bharathgaveni.fun
-MYSQL_HOST: mysql.bharathgaveni.fun
-SHIPPING_HOST: shipping.bharathgaveni.fun
-PAYMENT_HOST: payment.bharathgaveni.fun
+MONGODB_HOST: mongodb-{{ env }}.bharathgaveni.fun
+REDIS_HOST: redis-{{ env }}.bharathgaveni.fun
+CATALOGUE_HOST: catalogue-{{ env }}.bharathgaveni.fun
+CART_HOST: cart-{{ env }}.bharathgaveni.fun
+USER_HOST: user-{{ env }}.bharathgaveni.fun
+RABBITMQ_HOST: rabbitmq-{{ env }}.bharathgaveni.fun
+MYSQL_HOST: mysql-{{ env }}.bharathgaveni.fun
+SHIPPING_HOST: shipping-{{ env }}.bharathgaveni.fun
+PAYMENT_HOST: payment-{{ env }}.bharathgaveni.fun
